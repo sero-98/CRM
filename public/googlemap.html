@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/litera/bootstrap.min.css">
+    <link rel="stylesheet" href="main.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEJuRyggNsyFDskYzk75xmKIaMLxjDy9A&callback=initMap&v=weekly"
+      async
+    ></script>
+    <script>
+        //variables globales
+        let map;
+        let marker;
+        //geolocalizacion
+        let watchID;
+        let geoLocation;
+
+        function initMap() {
+            const myLatLng = {lat: -11.9701504, lng: -77.0113536 };
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 4,
+                center: myLatLng,
+            });
+            marker = new google.maps.Marker({
+                position: myLatLng,
+                map,
+                title: "Hola mundo"
+            });
+            //marker.setPosition(myLatLng);     
+            getPosition(); 
+        }
+
+        function getPosition(){
+            if(navigator.geolocation){
+                //ejecuta cada 60000 milisegundos (60 segundos, 1 minuto)
+                var options = { timeout: 60000 };
+                geoLoc = navigator.geolocation;
+                watchID = geoLoc.watchPosition(showLocationOnMap, errorHandler,options);
+            } else {
+                alert("Lo sentimos, el explorador no soporta geolocalización");
+            }
+        }
+
+        function showLocationOnMap(position) {
+            var latitud = position.coords.latitude;
+            var longitud = position.coords.longitude;
+            console.log("Latitud : " + latitud + ", Longitud : " + longitud);
+
+            const myLatLng = { lat: latitud, lng: longitud };
+            marker.setPosition(myLatLng);
+            map.setCenter(myLatLng);
+        }
+
+        function errorHandler(err){
+            if(err.code == 1){
+                alert("Error: Acceso Denegado");
+            } else if(err.code == 2){
+                alert("Error: Position no existe o no se encuenttra!");
+            }
+        }
+    </script>
+    <style type="text/css">
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        #map {
+        height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+</body>
+
+</html>
